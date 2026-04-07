@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: task-management-postgres
+    environment:
+      POSTGRES_DB: tasksDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    image: task-management-app
+    container_name: task-management-app
+    ports:
+      - '3002:3000'
+    environment:
+      DATABASE_URL: 'postgresql://postgres:password@postgres:5432/tasksDB?schema=public'
+      JWT_SECRET: 'your-super-secret-jwt-key-here'
+      ADMIN_EMAIL: 'admin@petzy.com'
+      ADMIN_PASSWORD: '12345678'
+      ADMIN_NAME: 'Admin User'
+      USER_EMAIL: 'user@petzy.com'
+      USER_PASSWORD: '12345678'
+      USER_NAME: 'Normal User'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        sleep 10 &&
+        npx prisma migrate deploy &&
+        npx prisma db seed &&
+        ls -la dist/ &&
+        npm run start:prod
+      "
+
+volumes:
+  postgres_data:

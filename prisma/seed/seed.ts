@@ -11,7 +11,7 @@ const prisma = new PrismaClient({
 async function seedUsers() {
   try {
     // admin
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@petzy.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
     const adminPassword = process.env.ADMIN_PASSWORD || '12345678';
     const adminName = process.env.ADMIN_NAME || 'Admin';
     const adminHashed = await bcrypt.hash(adminPassword, 10);
@@ -35,7 +35,7 @@ async function seedUsers() {
     console.log('🌱 Admin seeded successfully');
 
     // normal user
-    const userEmail = process.env.USER_EMAIL || 'user@petzy.com';
+    const userEmail = process.env.USER_EMAIL || 'user@example.com';
     const userPassword = process.env.USER_PASSWORD || '12345678';
     const userName = process.env.USER_NAME || 'Normal User';
     const userHashed = await bcrypt.hash(userPassword, 10);

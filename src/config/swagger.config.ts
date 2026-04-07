@@ -1,9 +1,9 @@
 import { DocumentBuilder } from '@nestjs/swagger';
 
 export const swaggerConfig = new DocumentBuilder()
-  .setTitle('Boilerplate API')
+  .setTitle('Task Management API')
   .setDescription(
-    'Official API documentation for the Boilerplate platform.\n\n' +
+    'Official API documentation for the Task Management platform.\n\n' +
       'Use this documentation to explore all endpoints, models, authentication methods, and integration guides.',
   )
   .setVersion('1.1.0')
@@ -27,7 +27,7 @@ export const swaggerCustomOptions = {
     tagsSorter: 'alpha',
     operationsSorter: 'alpha',
   },
-  customSiteTitle: 'Boilerplate API Docs',
+  customSiteTitle: 'Task Management API Docs',
   customCss: `
       .swagger-ui .topbar { background-color: #111827 !important; }
       .topbar-wrapper img { content: url('/logo.svg'); width: 140px; }

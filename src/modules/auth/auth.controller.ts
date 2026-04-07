@@ -11,6 +11,7 @@ import { CurrentUser } from '../../common/decorators/get-user.decorator';
 import { ApiResponse } from '../../common/response/api-response';
 import type { User } from '../../common/types/user.type';
 import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 
 @Controller('auth')
@@ -24,7 +25,8 @@ export class AuthController {
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  login(@Request() req) {
+  login(@Request() req, @Body() dto: LoginDto) {
+    console.log(dto);
     return this.authService.login(req.user);
   }
 

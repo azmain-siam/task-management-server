@@ -17,22 +17,26 @@ A comprehensive task management system built with NestJS, featuring role-based a
 ## User Roles
 
 ### Admin
+
 - Create, update, delete tasks
 - Assign tasks to users
 - View all tasks
 - View audit logs
 
 ### User
+
 - View assigned tasks
 - Update task status (PENDING → PROCESSING → DONE)
 
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/login` - Login with email/password
 - `GET /api/auth/me` - Get current user info
 
 ### Tasks (Admin)
+
 - `POST /api/tasks` - Create task
 - `GET /api/tasks` - Get all tasks
 - `GET /api/tasks/:id` - Get task by ID
@@ -40,10 +44,12 @@ A comprehensive task management system built with NestJS, featuring role-based a
 - `DELETE /api/tasks/:id` - Delete task
 
 ### Tasks (User)
+
 - `GET /api/tasks/my` - Get assigned tasks
 - `PATCH /api/tasks/:id` - Update task status (only if assigned)
 
 ### Audit Logs (Admin only)
+
 - `GET /api/audit/logs` - Get all audit logs
 
 ## Prerequisites
@@ -74,6 +80,7 @@ cp .env.example .env
 ```
 
 Required environment variables:
+
 - `DATABASE_URL` - PostgreSQL connection string
 - `JWT_SECRET` - JWT secret key
 
@@ -100,16 +107,19 @@ npm run start:prod
 After seeding, you can login with:
 
 **Admin User:**
+
 - Email: `admin@petzy.com`
 - Password: `12345678`
 
 **Normal User:**
+
 - Email: `user@petzy.com`
 - Password: `12345678`
 
 ## Task Status Flow
 
 Tasks have three statuses:
+
 1. `PENDING` - Initial status
 2. `PROCESSING` - When user starts working
 3. `DONE` - When completed
@@ -117,6 +127,7 @@ Tasks have three statuses:
 ## Audit Logging
 
 All actions are logged with:
+
 - Actor (who performed the action)
 - Action type (CREATE, UPDATE, DELETE, STATUS_CHANGE, ASSIGNMENT_CHANGE)
 - Target entity and ID
@@ -135,48 +146,199 @@ npm run test:e2e
 npm run test:cov
 ```
 
-## Docker
+## Quick Start with Docker 🐳
+
+### Prerequisites
+
+- Docker & Docker Compose installed
+
+### One-Command Setup
 
 ```bash
-# Build and run with Docker
-docker-compose up --build
-```
+docker compose up --build
 ```
 
-## Running the Application
+This will automatically:
 
-### Development
+- Build the NestJS application
+- Start PostgreSQL database
+- Run database migrations
+- Seed admin and user accounts
+- Start the application and expose API
+
+### Access the Application
+
+Once running, the application is accessible at:
+
+- **🌐 API Base URL:** `http://localhost:3002/api`
+- **📊 Swagger UI:** `http://localhost:3002/api/docs`
+
+### Predefined Docker Credentials
+
+- **Admin Account:** `admin@petzy.com` / `12345678`
+- **User Account:** `user@petzy.com` / `12345678`
+
+### Docker Services
+
+| Service      | Port | Purpose             |
+| ------------ | ---- | ------------------- |
+| **app**      | 3002 | NestJS REST API     |
+| **postgres** | 5433 | PostgreSQL Database |
+
+### Docker Commands
+
+```bash
+# Start containers (builds if needed)
+docker compose up -d
+
+# Stop all containers
+docker compose down
+
+# View logs
+docker compose logs -f
+
+# View logs for specific service
+docker compose logs -f app
+docker compose logs -f postgres
+
+# Restart containers
+docker compose restart
+
+# Rebuild and restart
+docker compose up --build -d
+```
+
+### Database Access
+
+To access PostgreSQL from your local machine:
+
+```bash
+# Connection details:
+# Host: localhost
+# Port: 5433
+# Database: mikearagonDB
+# Username: postgres
+# Password: password
+```
+
+### Volumes
+
+The Docker setup includes:
+
+- **postgres_data:** Persistent database storage (survives container restarts)
+- **/app/node_modules:** Cached node dependencies (improves build speed)
+
+## Running Locally (Without Docker)
+
+### Prerequisites
+
+- Node.js v20 or higher
+- PostgreSQL database running locally
+- npm or yarn
+
+### Installation & Setup
+
+1. **Clone and install:**
+
+```bash
+git clone <repository-url>
+cd task-management-system
+npm install
+```
+
+2. **Configure environment:**
+
+```bash
+cp .env.example .env
+```
+
+Update `.env` with your database credentials:
+
+```env
+DATABASE_URL="postgresql://postgres:password@localhost:5432/mikearagonDB?schema=public"
+JWT_SECRET="your-secret-key-here"
+```
+
+3. **Setup database:**
+
+```bash
+npx prisma migrate dev
+npx prisma db seed
+```
+
+4. **Start development server:**
 
 ```bash
 npm run start:dev
 ```
 
-### Production
+## Available NPM Scripts
 
 ```bash
-npm run build
-npm run start:prod
-```
+# Development
+npm run start:dev        # Start with hot-reload
+npm run start:debug      # Start in debug mode
 
-### With Docker
+# Production
+npm run build            # Build for production
+npm run start:prod       # Run production build
+npm run start:docker     # Docker startup script
 
-```bash
-docker-compose up --build
+# Quality & Testing
+npm run lint             # Run ESLint
+npm run format           # Format code with Prettier
+npm run test             # Run unit tests
+npm run test:watch       # Run tests in watch mode
+npm run test:cov         # Generate coverage report
+npm run test:e2e         # Run end-to-end tests
 ```
 
 ## API Documentation
 
-Once the application is running, visit `http://localhost:3000/api/docs` for Swagger documentation.
+Once the application is running, visit the Swagger documentation:
 
-## Available Scripts
+- **Local:** `http://localhost:3000/api/docs`
+- **Docker:** `http://localhost:3002/api/docs`
 
-- `npm run start` - Start the application
-- `npm run start:dev` - Start in watch mode
-- `npm run start:debug` - Start in debug mode
-- `npm run start:prod` - Start production build
-- `npm run build` - Build the application
-- `npm run test` - Run unit tests
-- `npm run test:e2e` - Run e2e tests
+## Project Structure
+
+```
+├── src/
+│   ├── modules/
+│   │   ├── auth/          # Authentication & JWT
+│   │   ├── task/          # Task CRUD operations
+│   │   ├── audit/         # Audit logging
+│   │   ├── user/          # User management
+│   │   └── prisma/        # Database service
+│   ├── common/
+│   │   ├── decorators/    # Auth decorators
+│   │   ├── filters/       # Exception filters
+│   │   ├── guards/        # Auth/Role guards
+│   │   ├── interceptors/  # Logging interceptor
+│   │   ├── response/      # API response formatter
+│   │   └── types/         # TypeScript types
+│   ├── config/            # Swagger configuration
+│   ├── app.module.ts      # Root module
+│   └── main.ts            # Application entry
+├── prisma/
+│   ├── schema.prisma      # Database schema
+│   ├── migrations/        # DB migrations
+│   └── seed/              # Database seeding
+├── Dockerfile             # Container image definition
+├── docker-compose.yml     # Multi-container orchestration
+└── README.md             # This file
+```
+
+## Architecture Highlights
+
+- **Modular Structure:** Organized by feature with dedicated modules
+- **Role-Based Access:** ADMIN and USER roles with guards
+- **Audit Trail:** Complete logging of all actions
+- **DTOs & Validation:** Type-safe request/response handling
+- **JWT Authentication:** Stateless auth with Passport
+- **Error Handling:** Centralized exception filters
+- **Database Migrations:** Version-controlled schema changes
+- **Docker-Ready:** Production-ready containerization
 - `npm run test:cov` - Run tests with coverage
 - `npm run lint` - Lint the code
 - `npm run format` - Format code with Prettier

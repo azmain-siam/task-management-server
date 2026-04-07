@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   getHello() {
     return {
-      message: 'Welcome to Boilerplate Api Server 🚀',
+      message: 'Welcome to Task Management Api Server 🚀',
       status: 'OK',
       version: '1.0.0',
       docs: '/api/docs',

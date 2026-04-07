@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { AuditAction, Task } from '@prisma/client';
+import { ApiResponse } from 'src/common/response/api-response';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -8,7 +9,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createTaskDto: CreateTaskDto, actorId: string): Promise<Task> {
+  async create(createTaskDto: CreateTaskDto, actorId: string) {
     const task = await this.prisma.task.create({
       data: createTaskDto,
     });
@@ -20,13 +21,15 @@ export class TaskService {
       assignedToId: task.assignedToId,
     });
 
-    return task;
+    return ApiResponse.success('Task created successfully', task);
   }
 
-  async findAll(): Promise<Task[]> {
-    return this.prisma.task.findMany({
+  async findAll() {
+    const tasks = await this.prisma.task.findMany({
       include: { assignedTo: true },
     });
+
+    return ApiResponse.success('Tasks retrieved successfully', tasks);
   }
 
   async findOne(id: string): Promise<Task> {
@@ -47,11 +50,7 @@ export class TaskService {
     });
   }
 
-  async update(
-    id: string,
-    updateTaskDto: UpdateTaskDto,
-    actorId: string,
-  ): Promise<Task> {
+  async update(id: string, updateTaskDto: UpdateTaskDto, actorId: string) {
     const existingTask = await this.findOne(id);
 
     const task = await this.prisma.task.update({
@@ -117,7 +116,7 @@ export class TaskService {
       );
     }
 
-    return task;
+    return ApiResponse.success('Task updated successfully', task);
   }
 
   async remove(id: string, actorId: string): Promise<void> {
