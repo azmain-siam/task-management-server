@@ -6,6 +6,20 @@ datasource db {
   provider = "postgresql"
 }
 
+enum TaskStatus {
+  PENDING
+  PROCESSING
+  DONE
+}
+
+enum AuditAction {
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_DELETED
+  STATUS_CHANGED
+  ASSIGNMENT_CHANGED
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -17,5 +31,38 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tasks  Task[]     @relation("AssignedTasks")
+  audits AuditLog[] @relation("ActorAudits")
+
   @@map("users")
+}
+
+model Task {
+  id           String     @id @default(cuid())
+  title        String
+  description  String?
+  status       TaskStatus @default(PENDING)
+  assignedToId String?
+  assignedTo   User?      @relation("AssignedTasks", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  audits AuditLog[] @relation("TaskAudits")
+
+  @@map("tasks")
+}
+
+model AuditLog {
+  id           String      @id @default(cuid())
+  actorId      String
+  actor        User        @relation("ActorAudits", fields: [actorId], references: [id])
+  action       AuditAction
+  targetEntity String // e.g., "task"
+  targetId     String // task id
+  relevantData Json? // before/after or summary
+  createdAt    DateTime    @default(now())
+
+  task Task? @relation("TaskAudits", fields: [targetId], references: [id])
+
+  @@map("audit_logs")
 }

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule } from '@nestjs/swagger';
+import 'dotenv/config';
 import * as express from 'express';
 import { join } from 'path';
 import { AppModule } from './app.module';
@@ -20,7 +20,7 @@ async function bootstrap() {
     //   'http://localhost:3000',
     // ],
   });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  // app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new LoggingInterceptor());
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

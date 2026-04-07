@@ -33,6 +33,30 @@ async function seedUsers() {
       },
     });
     console.log('🌱 Admin seeded successfully');
+
+    // normal user
+    const userEmail = process.env.USER_EMAIL || 'user@petzy.com';
+    const userPassword = process.env.USER_PASSWORD || '12345678';
+    const userName = process.env.USER_NAME || 'Normal User';
+    const userHashed = await bcrypt.hash(userPassword, 10);
+
+    await prisma.user.upsert({
+      where: { email: userEmail },
+      update: {
+        password: userHashed,
+        fullName: userName,
+        role: 'USER',
+      },
+      create: {
+        email: userEmail,
+        password: userHashed,
+        fullName: userName,
+        role: 'USER',
+        image: '',
+        phone: '',
+      },
+    });
+    console.log('🌱 User seeded successfully');
   } catch (error) {
     console.error('Seeding error:', error);
   } finally {

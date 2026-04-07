@@ -1,18 +1,50 @@
-# NestJS Boilerplate with Prisma and Authentication
+# Task Management System with NestJS, Prisma, and Role-Based Access
 
-A comprehensive boilerplate for building scalable NestJS applications with Prisma ORM, JWT authentication, Passport.js, and more.
+A comprehensive task management system built with NestJS, featuring role-based access control, audit logging, and JWT authentication.
 
 ## Features
 
-- **Authentication**: JWT-based authentication with Passport.js strategies (Local & JWT)
+- **User Management**: Role-based access with ADMIN and USER roles
+- **Task Management**: Full CRUD operations for tasks with status tracking
+- **Audit Logging**: Comprehensive logging of all important actions
+- **Authentication**: JWT-based authentication with Passport.js
 - **Database**: Prisma ORM with PostgreSQL
-- **Validation**: Class-validator and class-transformer
+- **Validation**: Class-validator for DTOs
 - **API Documentation**: Swagger/OpenAPI
 - **Error Handling**: Global exception filters
-- **CORS**: Configured for cross-origin requests
-- **Docker**: Containerized setup with Docker Compose
-- **Testing**: Jest setup for unit and e2e tests
-- **Linting**: ESLint and Prettier configuration
+- **Docker**: Containerized setup
+
+## User Roles
+
+### Admin
+- Create, update, delete tasks
+- Assign tasks to users
+- View all tasks
+- View audit logs
+
+### User
+- View assigned tasks
+- Update task status (PENDING → PROCESSING → DONE)
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - Login with email/password
+- `GET /api/auth/me` - Get current user info
+
+### Tasks (Admin)
+- `POST /api/tasks` - Create task
+- `GET /api/tasks` - Get all tasks
+- `GET /api/tasks/:id` - Get task by ID
+- `PATCH /api/tasks/:id` - Update task
+- `DELETE /api/tasks/:id` - Delete task
+
+### Tasks (User)
+- `GET /api/tasks/my` - Get assigned tasks
+- `PATCH /api/tasks/:id` - Update task status (only if assigned)
+
+### Audit Logs (Admin only)
+- `GET /api/audit/logs` - Get all audit logs
 
 ## Prerequisites
 
@@ -26,7 +58,7 @@ A comprehensive boilerplate for building scalable NestJS applications with Prism
 
 ```bash
 git clone <repository-url>
-cd nestjs-boilerplate
+cd task-management-system
 ```
 
 2. Install dependencies:
@@ -41,13 +73,74 @@ npm install
 cp .env.example .env
 ```
 
-Edit `.env` with your database URL and JWT secret.
+Required environment variables:
+- `DATABASE_URL` - PostgreSQL connection string
+- `JWT_SECRET` - JWT secret key
 
 4. Set up the database:
 
 ```bash
 npx prisma migrate dev
 npx prisma db seed
+```
+
+## Running the Application
+
+```bash
+# Development
+npm run start:dev
+
+# Production
+npm run build
+npm run start:prod
+```
+
+## Predefined Users
+
+After seeding, you can login with:
+
+**Admin User:**
+- Email: `admin@petzy.com`
+- Password: `12345678`
+
+**Normal User:**
+- Email: `user@petzy.com`
+- Password: `12345678`
+
+## Task Status Flow
+
+Tasks have three statuses:
+1. `PENDING` - Initial status
+2. `PROCESSING` - When user starts working
+3. `DONE` - When completed
+
+## Audit Logging
+
+All actions are logged with:
+- Actor (who performed the action)
+- Action type (CREATE, UPDATE, DELETE, STATUS_CHANGE, ASSIGNMENT_CHANGE)
+- Target entity and ID
+- Relevant data (changes made)
+
+## Testing
+
+```bash
+# Run tests
+npm run test
+
+# Run e2e tests
+npm run test:e2e
+
+# Run with coverage
+npm run test:cov
+```
+
+## Docker
+
+```bash
+# Build and run with Docker
+docker-compose up --build
+```
 ```
 
 ## Running the Application
