@@ -119,7 +119,7 @@ export class TaskService {
     return ApiResponse.success('Task updated successfully', task);
   }
 
-  async remove(id: string, actorId: string): Promise<void> {
+  async remove(id: string, actorId: string) {
     const task = await this.findOne(id);
 
     await this.prisma.task.delete({
@@ -133,6 +133,8 @@ export class TaskService {
       status: task.status,
       assignedToId: task.assignedToId,
     });
+
+    return ApiResponse.success('Task deleted successfully');
   }
 
   private async logAudit(

@@ -7,6 +7,23 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getAllUsers() {
+    const users = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        role: true,
+        image: true,
+        phone: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return ApiResponse.success('Users retrieved successfully', users);
+  }
+
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },

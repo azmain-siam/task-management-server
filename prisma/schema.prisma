@@ -33,8 +33,6 @@ model Task {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
-  audits AuditLog[] @relation("TaskAudits")
-
   @@map("tasks")
 }
 
@@ -47,8 +45,6 @@ model AuditLog {
   targetId     String // task id
   relevantData Json? // before/after or summary
   createdAt    DateTime    @default(now())
-
-  task Task? @relation("TaskAudits", fields: [targetId], references: [id])
 
   @@map("audit_logs")
 }
