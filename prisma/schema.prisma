@@ -27,7 +27,7 @@ model Task {
   id           String     @id @default(uuid())
   title        String
   description  String?
-  status       TaskStatus @default(PENDING)
+  status       TaskStatus @default(IN_PROGRESS)
   assignedToId String?
   assignedTo   User?      @relation("AssignedTasks", fields: [assignedToId], references: [id], onDelete: SetNull)
   createdAt    DateTime   @default(now())
@@ -50,8 +50,8 @@ model AuditLog {
 }
 
 enum TaskStatus {
-  PENDING
-  PROCESSING
+  IN_PROGRESS
+  TODO
   DONE
 }
 

@@ -16,7 +16,7 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: ['http://localhost:3001'],
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
   });
   // app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new LoggingInterceptor());
